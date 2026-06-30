@@ -1,0 +1,8 @@
+# Copy this file to ".Renviron" (which is git-ignored) and fill in your values.
+# shinyapps.io credentials: https://www.shinyapps.io  ->  Account  ->  Tokens.
+# These power dev/03_deploy.R for local/direct deploys. For CI deploys, set the
+# same three values as GitHub repo secrets instead (Settings -> Secrets -> Actions).
+
+SHINYAPPS_NAME=your-shinyapps-account-name
+SHINYAPPS_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+SHINYAPPS_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

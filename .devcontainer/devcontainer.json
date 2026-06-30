@@ -1,0 +1,34 @@
+{
+  // Cloud R workspace for GitHub Codespaces (RStudio + VS Code) with Claude Code.
+  // Open via: Code -> Codespaces -> Create codespace on main.
+  "name": "bayesadapt (R + RStudio + Claude Code)",
+  "image": "ghcr.io/rocker-org/devcontainer/r-ver:4",
+
+  "features": {
+    // RStudio Server, reachable on the forwarded port 8787
+    "ghcr.io/rocker-org/devcontainer-features/rstudio-server:latest": {},
+    // Shared renv package cache so rebuilds are fast
+    "ghcr.io/rocker-org/devcontainer-features/renv-cache:latest": {},
+    // Install the core (fast, MVP) packages at build time.
+    // Stan packages (rstanarm, rmsb, brms) are intentionally OMITTED here -
+    // add them only when you start the ordinal / proportional-odds extension.
+    "ghcr.io/rocker-org/devcontainer-features/r-packages:latest": {
+      "packages": "golem,renv,rsconnect,shiny,bslib,ggplot2,testthat,shinytest2,adaptr,shinylive",
+      "installSystemRequirements": true
+    }
+  },
+
+  "forwardPorts": [8787],
+  "portsAttributes": {
+    "8787": { "label": "RStudio Server", "onAutoForward": "silent" }
+  },
+
+  // Install Claude Code and restore the R library (if a lockfile already exists)
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["REditorSupport.r", "quarto.quarto"]
+    }
+  }
+}
