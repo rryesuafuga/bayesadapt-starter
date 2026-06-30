@@ -1,0 +1,31 @@
+Package: bayesadapt
+Title: Bayesian Adaptive Clinical-Trial Simulator
+Version: 0.1.0
+Authors@R:
+    person("Sseguya", "Solomon", , "sseguya256@gmail.com", role = c("aut", "cre"))
+Description: An R Shiny (golem) simulator of Bayesian adaptive clinical trials,
+    organised around the ADEMP framework. The MVP is a two-arm, binary-outcome
+    design with a conjugate Beta-Binomial backend (no MCMC), posterior-probability
+    stopping, and calibration of the superiority threshold to a target type I
+    error under the null. Operating characteristics are reported with Monte-Carlo
+    standard errors.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends:
+    R (>= 4.1.0)
+Imports:
+    bslib,
+    config (>= 0.3.1),
+    ggplot2,
+    golem (>= 0.4.0),
+    shiny (>= 1.7.0),
+    stats,
+    utils
+Suggests:
+    commonmark,
+    shinytest2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-GB
+Config/roxygen2/version: 8.0.0

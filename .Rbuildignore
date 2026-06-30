@@ -1,0 +1,15 @@
+^bayesadapt\.Rproj$
+^\.Rproj\.user$
+^app\.R$
+^dev$
+^docs$
+^\.github$
+^\.devcontainer$
+^_site$
+^\.Renviron.*$
+^renv$
+^renv\.lock$
+^LICENSE\.md$
+^\.gitignore$
+^README\.Rmd$
+^CLAUDE\.md$
