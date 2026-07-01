@@ -27,7 +27,7 @@ mod_calibration_ui <- function(id) {
           shiny::sliderInput(ns("target"), "Target type I error",
                              min = 0.01, max = 0.10, value = 0.05, step = 0.005),
           shiny::numericInput(ns("n_sims"), "Replicates (null)",
-                              value = 2000, min = 200, max = 50000, step = 500),
+                              value = 1500, min = 200, max = 50000, step = 500),
           shiny::numericInput(ns("seed"), "Seed",
                               value = 1, min = 1, max = 1e6, step = 1)
         ),
@@ -41,7 +41,7 @@ mod_calibration_ui <- function(id) {
         title = "Calibrated final threshold",
         value = shiny::textOutput(ns("vb_threshold")),
         shiny::textOutput(ns("vb_achieved")),
-        theme = "primary"
+        theme = "primary", min_height = "160px"
       ),
       bslib::card(
         bslib::card_header("Calibration curve"),
@@ -56,12 +56,18 @@ mod_calibration_ui <- function(id) {
 #' @param id Module id.
 #' @param design A reactive of design inputs (from [mod_design_inputs_server()]).
 #' @param settings A reactive of simulation settings (interim thresholds, draws).
-#' @return Invisibly `NULL`; renders outputs.
+#' @return A reactive handle to the current calibration result (a list with
+#'   `threshold`, `type_i_error`, `mcse`, `target`, `curve`, ...), or `NULL`
+#'   before the first calibration completes. The operating-characteristics
+#'   module consumes this to read power at the calibrated threshold.
 #' @importFrom shiny moduleServer eventReactive req renderText renderPlot withProgress
 #' @noRd
 mod_calibration_server <- function(id, design, settings) {
   shiny::moduleServer(id, function(input, output, session) {
 
+    # `ignoreNULL = FALSE` makes this fire once on load (button value 0) as well
+    # as on every click, so the type-I-error exhibit is populated immediately —
+    # a reviewer sees the payoff without hunting for a button.
     cal <- shiny::eventReactive(input$calibrate, {
       d <- design()
       s <- settings()
@@ -79,34 +85,24 @@ mod_calibration_server <- function(id, design, settings) {
           sup_interim = s$sup_interim, fut_interim = s$fut_interim
         )
       })
-    })
-
-    has_run <- shiny::reactive(isTRUE(shiny::isTruthy(input$calibrate)) &&
-                                 input$calibrate > 0)
+    }, ignoreNULL = FALSE)
 
     output$vb_threshold <- shiny::renderText({
-      if (!has_run()) return("--")
+      shiny::req(cal())
       sprintf("%.3f", cal()$threshold)
     })
     output$vb_achieved <- shiny::renderText({
-      if (!has_run()) return("Click Calibrate to run under the null.")
+      shiny::req(cal())
       sprintf("type I error %s%s",
               fmt_oc(cal()$type_i_error, cal()$mcse),
               if (cal()$achieved_target) "" else "  (target not reachable on grid)")
     })
     output$curve <- shiny::renderPlot({
-      if (!has_run()) {
-        return(
-          ggplot2::ggplot() +
-            ggplot2::annotate("text", x = 0, y = 0,
-                              label = "Press Calibrate to simulate under the null\nand grid-search the superiority threshold.",
-                              size = 5, colour = "#6c757d") +
-            ggplot2::theme_void()
-        )
-      }
+      shiny::req(cal())
       plot_calibration(cal())
     })
 
-    invisible(NULL)
+    # Read-only handle returned to the app server for wiring into the OC tab.
+    cal
   })
 }
