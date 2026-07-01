@@ -29,10 +29,7 @@ plot_sample_size <- function(per_trial) {
     ggplot2::geom_vline(xintercept = e_n, linewidth = 1, colour = "#0F6E56") +
     ggplot2::annotate("text", x = e_n, y = Inf, vjust = 1.5, hjust = -0.1,
                       label = sprintf("E[N] = %.0f", e_n), colour = "#0F6E56") +
-    ggplot2::labs(
-      x = "Total sample size (both arms)", y = "Simulated trials",
-      title = "Distribution of total sample size"
-    ) +
+    ggplot2::labs(x = "Total sample size (both arms)", y = "Simulated trials") +
     theme_bayesadapt()
 }
 
@@ -67,8 +64,7 @@ plot_calibration <- function(calibration) {
     ggplot2::labs(
       x = "Final superiority threshold  P(benefit) >=",
       y = "Type I error (declaration rate under the null)",
-      title = "Calibration of the superiority threshold",
-      subtitle = "Ribbon shows +/- Monte-Carlo standard error"
+      caption = "Ribbon shows +/- Monte-Carlo standard error"
     ) +
     theme_bayesadapt()
 }
@@ -85,17 +81,18 @@ plot_calibration <- function(calibration) {
 plot_oc_bars <- function(oc) {
   keep <- c("p_declare", "p_stop_efficacy", "p_stop_futility", "p_inconclusive")
   d <- oc[oc$metric %in% keep, ]
-  d$label <- factor(d$label, levels = d$label)
+  # Reverse the level order so the first metric sits at the top after coord_flip.
+  d$label <- factor(d$label, levels = rev(d$label))
   ggplot2::ggplot(d, ggplot2::aes(x = .data$label, y = .data$value)) +
-    ggplot2::geom_col(fill = "#9FE1CB") +
+    ggplot2::geom_col(fill = "#9FE1CB", width = 0.7) +
     ggplot2::geom_errorbar(
       ggplot2::aes(ymin = pmax(0, .data$value - .data$mcse),
                    ymax = .data$value + .data$mcse),
-      width = 0.25, colour = "#0F6E56"
+      width = 0.2, colour = "#0F6E56"
     ) +
-    ggplot2::scale_y_continuous(labels = function(x) paste0(100 * x, "%")) +
-    ggplot2::labs(x = NULL, y = "Probability",
-                  title = "Operating characteristics (+/- MCSE)") +
-    theme_bayesadapt() +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 20, hjust = 1))
+    ggplot2::scale_y_continuous(labels = function(x) paste0(100 * x, "%"),
+                                limits = c(0, NA)) +
+    ggplot2::coord_flip() +
+    ggplot2::labs(x = NULL, y = "Probability") +
+    theme_bayesadapt()
 }

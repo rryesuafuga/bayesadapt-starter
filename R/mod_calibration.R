@@ -81,18 +81,29 @@ mod_calibration_server <- function(id, design, settings) {
       })
     })
 
+    has_run <- shiny::reactive(isTRUE(shiny::isTruthy(input$calibrate)) &&
+                                 input$calibrate > 0)
+
     output$vb_threshold <- shiny::renderText({
-      shiny::req(cal())
+      if (!has_run()) return("--")
       sprintf("%.3f", cal()$threshold)
     })
     output$vb_achieved <- shiny::renderText({
-      shiny::req(cal())
+      if (!has_run()) return("Click Calibrate to run under the null.")
       sprintf("type I error %s%s",
               fmt_oc(cal()$type_i_error, cal()$mcse),
               if (cal()$achieved_target) "" else "  (target not reachable on grid)")
     })
     output$curve <- shiny::renderPlot({
-      shiny::req(cal())
+      if (!has_run()) {
+        return(
+          ggplot2::ggplot() +
+            ggplot2::annotate("text", x = 0, y = 0,
+                              label = "Press Calibrate to simulate under the null\nand grid-search the superiority threshold.",
+                              size = 5, colour = "#6c757d") +
+            ggplot2::theme_void()
+        )
+      }
       plot_calibration(cal())
     })
 

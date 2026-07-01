@@ -6,8 +6,9 @@ test_that("mod_operating_chars renders headline outputs", {
     args = list(results = shiny::reactive(res)),
     {
       expect_type(output$vb_declare, "character")
-      expect_match(output$vb_declare, "%")     # "xx.x% ± y.y"
-      expect_match(output$vb_n, "^[0-9]+$")     # expected N, integer string
+      expect_match(output$vb_declare, "^[0-9.]+%$")  # value only, e.g. "79.6%"
+      expect_match(output$vb_declare_mcse, "MCSE")   # MCSE in its own slot
+      expect_match(output$vb_n, "^[0-9]+$")          # expected N, integer string
       expect_true(nchar(output$declare_label) > 0)
     }
   )

@@ -11,6 +11,10 @@ test_that("mod_calibration calibrates on demand under the null", {
     mod_calibration_server,
     args = list(design = design, settings = settings),
     {
+      # Placeholder before the button is pressed (never a blank exhibit).
+      expect_identical(output$vb_threshold, "--")
+      expect_match(output$vb_achieved, "Click Calibrate")
+      # After pressing, a real threshold and achieved type I error appear.
       session$setInputs(target = 0.05, n_sims = 400, seed = 1, calibrate = 1)
       expect_match(output$vb_threshold, "^0\\.[0-9]+$")
       expect_match(output$vb_achieved, "type I error")

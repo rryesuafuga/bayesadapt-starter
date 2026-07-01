@@ -10,3 +10,16 @@ test_that("plot helpers return ggplot objects", {
                              grid = seq(0.9, 0.999, by = 0.01))
   expect_s3_class(plot_calibration(cal), "ggplot")
 })
+
+test_that("plots carry no in-plot title (cards supply the header)", {
+  res <- run_trial_simulation(0.3, 0.45, n_max = 100, n_interim = 50,
+                              n_sims = 60, n_draws = 300, seed = 2)
+  expect_null(plot_sample_size(res$per_trial)$labels$title)
+  expect_null(plot_oc_bars(res$oc)$labels$title)
+})
+
+test_that("OC bar chart is horizontal (coord_flip)", {
+  res <- run_trial_simulation(0.3, 0.45, n_max = 100, n_interim = 50,
+                              n_sims = 60, n_draws = 300, seed = 2)
+  expect_s3_class(plot_oc_bars(res$oc)$coordinates, "CoordFlip")
+})

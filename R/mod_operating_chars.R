@@ -15,7 +15,9 @@ mod_operating_chars_ui <- function(id) {
       col_widths = c(3, 3, 3, 3),
       bslib::value_box(
         title = shiny::textOutput(ns("declare_label")),
-        value = shiny::textOutput(ns("vb_declare")), theme = "primary"
+        value = shiny::textOutput(ns("vb_declare")),
+        shiny::textOutput(ns("vb_declare_mcse")),
+        theme = "primary"
       ),
       bslib::value_box(title = "Stop early: efficacy",
                        value = shiny::textOutput(ns("vb_eff"))),
@@ -64,7 +66,11 @@ mod_operating_chars_server <- function(id, results) {
     })
     output$vb_declare <- shiny::renderText({
       shiny::req(results())
-      r <- oc_value("p_declare"); fmt_oc(r$value, r$mcse)
+      sprintf("%.1f%%", 100 * oc_value("p_declare")$value)
+    })
+    output$vb_declare_mcse <- shiny::renderText({
+      shiny::req(results())
+      sprintf("+/- %.1f%% MCSE", 100 * oc_value("p_declare")$mcse)
     })
     output$vb_eff <- shiny::renderText({
       shiny::req(results()); sprintf("%.1f%%", 100 * oc_value("p_stop_efficacy")$value)
