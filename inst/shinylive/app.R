@@ -83,6 +83,8 @@ ui <- page_sidebar(
     h6("Design"),
     numericInput("n_max", "Max sample size per arm", 200, 20, 2000, 10),
     numericInput("n_interim", "Interim analysis at n/arm", 100, 10, 2000, 10),
+    helpText("Prior: uniform Beta(1, 1) per arm -> prior ESS = a0 + b0 = 2 ",
+             "patients/arm (negligible vs n). The full app lets you vary it."),
     hr(),
     h6("Decision thresholds (posterior P of benefit)"),
     sliderInput("sup_interim", "Efficacy stop if P >=", 0.90, 0.999, 0.990, 0.001),
@@ -154,7 +156,8 @@ server <- function(input, output, session) {
        since the two true rates are %s), using an expected total of
        <strong>%.0f</strong> patients across both arms.</p>
        <p>Workflow: set the two true rates <em>equal</em> and tune the thresholds until the
-       type I error sits at your target (e.g. 2.5-5%%); then raise the treatment rate to read
+       type I error sits at your target (the FDA one-sided standard is 2.5%%; this
+       declaration rate is one-sided by construction); then raise the treatment rate to read
        the power at that calibrated threshold.</p>",
       100 * r$p_declare_sup, label,
       if (r$null) "equal" else "different", r$e_n

@@ -22,12 +22,19 @@ mod_calibration_ui <- function(id) {
           "grid-searches the final superiority threshold. The calibrated value is ",
           "the smallest threshold whose type I error is at or below the target."
         ),
+        shiny::helpText(
+          "Default 0.025 is the FDA one-sided standard; this design is one-sided ",
+          "by construction (superiority is declared only when P(treatment > ",
+          "control) is high), so the declaration rate under the null is a ",
+          "one-sided error rate. Stricter targets need more null replicates to ",
+          "keep the Monte-Carlo error well below the target."
+        ),
         bslib::layout_columns(
           col_widths = c(4, 4, 4),
-          shiny::sliderInput(ns("target"), "Target type I error",
-                             min = 0.01, max = 0.10, value = 0.05, step = 0.005),
+          shiny::sliderInput(ns("target"), "Target type I error (one-sided)",
+                             min = 0.01, max = 0.10, value = 0.025, step = 0.005),
           shiny::numericInput(ns("n_sims"), "Replicates (null)",
-                              value = 1500, min = 200, max = 50000, step = 500),
+                              value = 3000, min = 200, max = 50000, step = 500),
           shiny::numericInput(ns("seed"), "Seed",
                               value = 1, min = 1, max = 1e6, step = 1)
         ),
