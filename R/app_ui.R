@@ -12,6 +12,10 @@ app_ui <- function(request) {
     bslib::page_navbar(
       title = "bayesadapt",
       theme = bslib::bs_theme(version = 5, preset = "cosmo"),
+      # Let panels size to their content and scroll the page naturally, rather
+      # than forcing every panel to fill the viewport (which compressed the
+      # calibration controls card and overlapped its inputs).
+      fillable = FALSE,
       sidebar = bslib::sidebar(
         width = 340,
         mod_design_inputs_ui("design"),

@@ -63,7 +63,7 @@ plot_calibration <- function(calibration) {
     ) +
     ggplot2::labs(
       x = "Final superiority threshold  P(benefit) >=",
-      y = "Type I error (declaration rate under the null)",
+      y = "Type I error under the null",
       caption = "Ribbon shows +/- Monte-Carlo standard error"
     ) +
     theme_bayesadapt()

@@ -85,7 +85,7 @@ summarise_oc <- function(per_trial) {
 #' @keywords internal
 fmt_oc <- function(value, mcse, pct = TRUE, digits = 1) {
   if (pct) {
-    sprintf("%.*f%% +/- %.*f", digits, 100 * value, digits, 100 * mcse)
+    sprintf("%.*f%% +/- %.*f%%", digits, 100 * value, digits, 100 * mcse)
   } else {
     sprintf("%.*f +/- %.*f", digits, value, digits, mcse)
   }
