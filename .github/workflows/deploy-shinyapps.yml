@@ -38,5 +38,14 @@ jobs:
               token  = Sys.getenv("SHINYAPPS_TOKEN"),
               secret = Sys.getenv("SHINYAPPS_SECRET")
             )
-            rsconnect::deployApp(appName = "bayesadapt", forceUpdate = TRUE)
+            # dependencyResolution = "library": resolve deps from the renv
+            # library restored by setup-renv, rather than re-checking it against
+            # renv.lock. Newer rsconnect aborts when the library and lockfile
+            # differ (the rsconnect install above adds packages not in the lock),
+            # so this keeps the deploy robust to that toolchain drift.
+            rsconnect::deployApp(
+              appName = "bayesadapt",
+              forceUpdate = TRUE,
+              dependencyResolution = "library"
+            )
           '
