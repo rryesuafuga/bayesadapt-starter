@@ -39,7 +39,7 @@ mod_calibration_ui <- function(id) {
                               value = 1, min = 1, max = 1e6, step = 1)
         ),
         shiny::actionButton(ns("calibrate"), "Calibrate",
-                            class = "btn-primary")
+                            class = "btn-primary mt-3")
       )
     ),
     bslib::layout_columns(
