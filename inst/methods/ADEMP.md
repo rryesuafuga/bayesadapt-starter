@@ -28,6 +28,12 @@ MCMC. The decision quantity is the posterior probability of benefit
 `p_sup = P(p_treat > p_control | data)`, computed by Monte-Carlo draws from the
 two Beta posteriors.
 
+**Prior influence.** The prior's effective sample size (ESS) is `a0 + b0` per
+arm — the update shows the prior acts like `a0 + b0` extra patients. The app
+reports it as a fraction of the information at each look (ESS / n), so its
+larger relative weight at the interim (smaller `n`) is explicit. The default
+`Beta(1, 1)` is uniform (ESS 2, negligible against `n = 150`/arm).
+
 Decision rule:
 
 - **Interim (at `n_interim`/arm):** stop for **efficacy** if `p_sup ≥ sup_interim`;
@@ -40,7 +46,8 @@ posterior-probability futility rule.)
 ## Performance measures
 Reported with their **Monte-Carlo standard error (MCSE)**:
 
-- Declaration rate — the **type I error** under the null, the **power** under the
+- Declaration rate — the **type I error** under the null (one-sided by
+  construction; the FDA standard target is 2.5%), the **power** under the
   alternative (binomial MCSE `sqrt(p(1−p)/n_sims)`).
 - Probability of stopping early for efficacy vs futility.
 - Expected total sample size `E[N]` (MCSE `sd(N)/sqrt(n_sims)`).
